@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#THIS SCRIPT CREATES AN ACCOUNT ON THE LOCAL SYSTEM
+#YOU WILL BE PROMPTED FOR THE ACCOUNT NAME AND PASSWORD
+
+#ASK FOR THE USERNAME 
+read -p "enter the username to create :" USER_NAME
+
+#ASK FOR THE REAL NAME 
+read -p "enter the name of the person who this account is for :" COMMENT
+
+#ASK FOR THE PASSWORD 
+read -p "enter the password to read for the account :" PASSWORD
+
+#CREATE THE USER
+useradd -c "${COMMENT}" -m ${USER_NAME} #-C : Any text string. It is generally a short description of the login, and is currently used as the field for the user's full name , -m : By default, if this option is not specified and CREATE_HOME is not enabled, no home directories are created
+
+#SET THE PASWORD FOR THE USER 
+echo $PASSWORD | passwd --stdin ${USER_NAME}   #--stdin: This option is used to indicate that passwd should read the new pass‐word from standard input, which can be a pipe.
+
+#FORCE PASSWORD CHANGE ON FIRST LOGIN
+passwd -e ${USER_NAME} # -e : This is a quick way to expire a password for  an  account.  The  user will  be forced to change the password during the next login attempt. Available to root only.
