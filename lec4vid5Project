@@ -1,0 +1,92 @@
+#!/bin/bash
+#
+# this script creates a new user on the local system 
+# this script takes username as an argument to the script 
+# optionally , you can also provide a comment as an argument for the account 
+# password will be automatically genrated for the account 
+# username , password , host will be displayed 
+
+# make sure the script run with super user privilages 
+if [ $UID -ne 0 ]
+then 
+   echo "please run the script as root"
+   exit 1
+fi
+
+# if they don't supply atleast one argument , then give them help 
+if [ $# -lt 1 ]
+then 
+   echo " usage ${0} USER_NAME [COMMENT] .. "
+   exit 1
+fi
+
+# the first parameter is the username 
+USER_NAME="${1}"
+
+# the rest parameter is comment
+shift 
+COMMENT="${@}"
+
+# Generate a password 
+PASSWORD=$(date +%s%N$RANDOM | sha256sum | head -c48)   
+
+# Create the user with the password 
+useradd -c "${COMMENT}" -m $USER_NAME
+
+# Check to see if the useradd command succeded
+# we dont want to tell the user that the account is created even if it was not created
+if [ $? -ne 0 ]
+then 
+   echo 'the account could not be created'
+   exit 1
+fi
+
+# SET the password 
+echo $PASSWORD | passwd --stdin ${USER_NAME}
+
+# Check to see if the passwd comamnd succeded 
+if [ $? -ne 0 ]
+then 
+   echo 'the password could not be set'
+   exit 1
+fi
+
+# force passwrd change on the first login 
+passwd -e $USER_NAME
+
+# Display the username, password, and the host where the user was created.
+echo # leaves a blank space
+echo 'username'
+echo "${USER_NAME}"
+echo
+echo 'password'
+echo "${PASSWORD}"
+echo 
+echo 'Host'
+echo "${HOSTNAME}"
+
+exit 0
+   
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
