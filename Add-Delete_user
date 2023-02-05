@@ -1,0 +1,96 @@
+#!/bin/bash
+
+# This script enables you to add or remove user
+
+ARCHIEVE_DIR='/archieve'
+#CASE="${1}"
+ 
+	       
+#case ${1} in
+#  ADD) adduser "$@" ;;
+#  DEL) deleteuser "$@" ;;
+#  ?) echo " usage ${0} add USER_NAME [FULL NAME] nothing" ;;
+#esac  
+
+addo(){
+#USER_NAME="${2}"
+#shift
+#COMMENT=${@} # FULL NAME
+
+# ADDING USER
+echo "adding user with username ${USER_NAME}" 
+useradd -m "${USER_NAME}"
+if [ "${?}" -ne 0 ]
+then
+   echo "username can not be created try again with a differnt one" >&2
+   exit 1
+fi
+
+# CREATING SYSTEM GENERATED PASSWORD
+PASSWORD=$( date +%s%N$RANDOM | sha256sum | head -c32 )
+SPECIAL_CHARACTER_1=$(echo '@!#%^^$*()+;.><' |fold -w1 | shuf | head -c1)
+SPECIAL_CHARACTER_2=$(echo '@!#%^^$*()+;.><' |fold -w1 | shuf | head -c1)
+PASSWORD="${SPECIAL_CHARACTER_2}${PASSWORD}${SPECIAL_CHARACTER_1}"
+echo "${PASSWORD}" | passwd --stdin "${USER_NAME}"
+# Check to see if the passwd comamnd succeded 
+if [ $? -ne 0 ]
+then 
+   echo 'the password could not be set' >&2
+   exit 1
+fi
+
+# force passwrd change on the first login 
+passwd -e "${USER_NAME}"
+
+# Display the username, password, and the host where the user was created.
+echo # leaves a blank space
+echo 'username'
+echo "${USER_NAME}"
+echo
+echo 'password'
+echo "${PASSWORD}"
+exit 0
+}
+
+delo()
+{
+#USER_NAME=${2}
+# DELETING USER
+read -p "do you want to remove the home directory(y/n)" REMOVE
+if [ "${REMOVE}" = 'y' ]
+  then 
+     echo 'deleting user along with home directory'
+     userdel -r "${USER_NAME}"
+     if [ "${?}" -ne 0 ]
+     then 
+      echo "user ${USER_NAME} can not be deleted " >&2
+          exit 1
+     fi
+else 
+    userdel -r "${USER_NAME}"
+    if [ $? != 0 ]
+    then 
+      echo "user ${USER_NAME} can not be deleted " >&2
+          exit 1
+     fi
+fi
+ exit 0       
+}
+
+USER_NAME=${2}
+if [[ "${1}" = 'add' ]]
+then 
+    echo $#  
+   addo
+elif [[ "${1}" = 'delete' ]]   
+then
+   delo
+else
+   echo " usage ${0} add USER_NAME [FULL NAME] nothing"
+exit 1   
+fi 
+
+
+
+exit 0
+
