@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#Display Hello
+echo 'Hello'
+
+#Display value using variable
+word='hello'
+
+echo "$word"  #when we want to value up word we use  $ sign ,
+ echo '$word' #to show exactly what we specify we use single quote , if you want the variables to be interpreted make sure you use double quote, if we use '$word' then we would get $word as output
+ 
+ #combine variable with hardquoted text 
+ echo "$word ing world learning bash"
+ 
+ #display contents of the variable using alternative syntax
+ echo "${word}ing world learning bash" #to append a word dircly with the variable we have to use { }
+ 
+ #combine two variables
+ VAR1='MEW' #you can't give gap after the =
+ VAR2='ING'
+ echo "$VAR1$VAR2 is good for jawline" 
+ echo "${VAR1}${VAR2} is good for jawline"
+ 
+ #reassignment of VAR1 VARIABLE
+ VAR1='CHEW'
+ echo "${VAR1}${VAR2} is good for jawline"
+ 
+ 
