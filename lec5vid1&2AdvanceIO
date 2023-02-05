@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# This script demonstrates I/O redirection
+#EACH NEW PROCESS OPENS WITH THREE NEW OPEN FILE DESCRIPTERS , FD 0 - STANDARD INPUT , FD 1 - STANDARD OUTPUT , FD 2 - STANDARD ERROR 
+
+# Redirect STDOUT to a file 
+FILE='//home/devfedora/Debankan/bash-scripting/lec5vid1'
+head -n2 /etc/passwd > ${FILE} # output generated in the file use cat to view 
+cat $FILE
+echo '1'
+
+# Redirect STDIN to a program
+FILE="/home/devfedora/Debankan/bash-scripting/cities"
+read LINE < ${FILE}
+echo "The line contains: ${LINE}"
+echo '2'
+
+# Redirect STDOUT to a file , overwriting the file 
+FILE='//home/devfedora/Debankan/bash-scripting/lec5vid1'
+tail -n3 /etc/passwd > ${FILE}
+cat $FILE
+echo '3'
+
+# Redirect STDOUT to a file , appending to the file 
+echo "$RANDOM $RANDOM" >> ${FILE}
+cat $FILE
+echo '4'
+
+#--- VIDEO 2---
+#Redirecting standard input to a program, using FD 0
+read LINE 0< ${FILE}
+echo $LINE
+echo '5'
+
+# Redirecting standard error to a file 
+head -n1 /etc/passwd /etc/hosts /fakefile 2> head.err # we use 0 for standard input file descriptors, 1 for standard output file descriptors, 2 for standard error output file descriptors
+cat head.err
+echo '6'
+
+#Redirecting standard output and standard error output both to a file 
+head -n1 /etc/passwd /etc/hosts /fakefile > head.both 2>&1 #here output is generating in head.both which is 1 and standard error output which is 2 is appending with standard output file descriptors WE CAN ALSO USE: head -n1 /etc/passwd /etc/hosts /fakefile &> head.both
+cat head.both
+echo '7'
+
+# Pipe works as standard input but standard error doesnot flows through pipe 
+head -n1 /etc/passwd /etc/hosts /fakefile | cat -n
+
+# if you want pipe to catch the standard error along with standard output 
+head -n1 /etc/passwd /etc/hosts /fakefile 2>&1 | cat -n #SHORTCUT: head -n1 /etc/passwd /etc/hosts /fakefile |& cat -n
+
+# Send output to standard error
+echo "THIS IS STDERR" >&2
+
+# Discard STDOUT
+echo
+echo "discarding STDOUT:"
+head -n3 /etc/passwd /fakefile > /dev/null
+
+# Discard STDERR
+echo
+echo "discarding STDERR:"
+head -n3 /etc/passwd /fakefile 2> /dev/null
+
+# Discard STDOUT AND STDERR
+echo
+echo "discarding STDOUT AND STDERR:"
+head -n3 /etc/passwd /fakefile &> /dev/null
+
+ # clean up
+ rm $FILE &> /dev/null
+
+
+
+
+
