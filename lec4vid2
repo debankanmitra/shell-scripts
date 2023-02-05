@@ -1,0 +1,10 @@
+🚩️${0} Expands to the name of the shell or shell script. is the first argument of the script, i.e. the script name or path. If you launch your script as path/to/script.sh , then ${0} will be exactly that string: path/to/script.sh . The %/* part modifies the value of ${0} . It means: take all characters until / followed by a file name. //special parameters in man bash
+
+🚩️${#} Expands to the number of positional parameters in decimal //special parameters in man bash
+
+🚩️IF A COMMAND IS NOT AN EXECUTABLE OR A SHELL BUILTIN , IT WILL SEARCH FOR THE COMMAND ON PATH ENVIRONMENT VARIABLES
+
+🚩️$ next to the cursor indicates the type of shell you're running. The dollar sign indicates it is the Bourne Again Shell (bash), the default Linux shell.
+The tilde character ~ is a shorthand for your home directory. Instead of typing /home/username, you can type the tilde.
+
+🚩️This is where the dot slash ./ notation comes in. It means “Look in the current directory.” When you use ./, you tell Ubuntu or Fedora or SUSE or whatever Linux distribution you're using to look in the current directory for the command you wish to run, and completely ignore what's on the application PATH.
