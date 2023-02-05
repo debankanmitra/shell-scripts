@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Demostrate the use of shift and while loops
+
+# Display the first three parameters 
+echo "parameter 1: ${1}"
+echo "parameter 2: ${2}"
+echo "parameter 3: ${3}"
+echo "parameter 4: ${@}"
+
+# The while loop
+X=1
+while [ $X -eq 1 ]
+do
+ echo "$(type -a while)"
+ echo "THE VALUE OF X IS: $X"
+# sleep 1    # Delay for a specified amount of time
+ X=8
+done
+
+# The while loop using true 
+while [ true ]  # Return a successful result. Exit Status: Always succeeds.
+do
+ echo "$RANDOM"
+ sleep 0.5    
+done
+ 
+# Loop through all positional parameters  
+while [ $# -gt 0 ]
+do 
+  echo "No of parameters: $#"
+  echo "parameter 1: ${1}"
+  echo "parameter 2: ${2}"
+  echo "parameter 3: ${3}"
+echo 
+shift 1
+done
+  
