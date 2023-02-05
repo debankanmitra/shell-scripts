@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#Display UID and username of the user executing the script 
+#Display if the user is root user or not 
+
+#Display UID
+echo "your user id is ${UID} and $BASHPID , $HOSTNAME , $OSTYPE" # expands to the user id of the current user ,initialized at shell startup FOR MORE Shell Variables like uid,bashpid 'man bash'
+
+#Display username 
+USER_NAME=$(id -un) #instead of $(id -un) we can also give `id -un`
+echo "your username is $USER_NAME"
+
+#Display if the user is root user or not 
+if [ "${UID}" -eq 0 ] #root always has the uid of 0
+then 
+  echo "you are root"
+else
+   echo "you are not root"
+fi     
