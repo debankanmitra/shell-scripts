@@ -1,0 +1,43 @@
+#!/bin/bash
+
+#display uid and username of the user executing the script 
+#diplay if the user is a vagrant user or not 
+
+#display the uid 
+echo "your uID is ${UID}"
+
+#only display if the uid does not match 1000
+UID_TO_TEST_FOR='1000'
+if [ $UID_TO_TEST_FOR != ${UID} ]
+then
+  echo "your uid does not match $UID_TO_TEST_FOR to avoid don't run it as sudo"
+  exit 1 #when script or a program exit successfully it returns a exit status 0 by convention , if it doesnt execute successfully it returns a non zero staus to see exit statuses 'man useradd'
+fi  
+
+#display the username
+USER_NAME=$(id -un dklafd)
+
+#test if the command succeeded
+if [ ${?} -ne 0 ] # ? holds the exit status of most recentlty executed command which is $(id -un)
+then 
+  echo 'THE ID COMMAND DID NOT EXECUTE SUCCESFULLY BECAUSE EXIT STATUS OF A FAILED PROGRAM IS NOT 0' #if we fail the id someway these line will execute
+  exit 1 # exit terminate the whole script
+fi  
+echo "your user name is ${USER_NAME}"
+  
+
+#you can use a string test conditional 
+USER_NAME_TO_TEST_FOR='devfedora'
+if [ $(id -un) = $USER_NAME_TO_TEST_FOR ] # == sign used for pattern matching 
+then 
+  echo "your user name matches $USER_NAME_TO_TEST_FOR"
+fi  
+
+#test for != (not equal) for the string  
+if [ $(id -un) != $USER_NAME_TO_TEST_FOR ] # == sign used for pattern matching 
+then 
+  echo "your user name does not matches $USER_NAME_TO_TEST_FOR"
+  exit 1
+fi  
+
+exit 0 # if you dont specify the exit status it will take the previous exit status as exit status
