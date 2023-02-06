@@ -1,0 +1,141 @@
+#!/bin/bash
+
+# The script disables , deletes and/or archives users on the local system
+ARCHIEVE_DIR='/archieve'
+# usage
+usage(){
+   echo "usage: ${0} [-dra] USER [USERNAME]...." >&2
+   echo "-d disables a local linux account" >&2
+   echo "-r removes the home directory" >&2
+   echo "-a create a archieve of the home directory " >&2
+   exit 1
+}
+
+# Mkae sure the script runs as root
+if [ $UID -ne 0 ]
+then
+  echo 'please run it as root' >&2
+  exit 1
+fi
+
+# parse the options 
+while getopts dra OPTION
+do
+  case $OPTION
+  d) DELETE_USER='true' ;;
+  r) REMOVE_OPTION='-r' ;;
+  a) ARCHIEVE='true' ;;
+  ?) usage ;;
+  esac
+done
+
+# Remove the first option to loop through the remaining arguments 
+shift "$( OPTIND - 1 )"
+
+# If user doesn't supply atleast one argument give them help
+if [ ${#} -lt 1 ]
+then 
+   usage
+fi
+
+# loop through all the usernames supplied as argument 
+for NAME in "${@}"
+do
+ echo "processing $NAME"
+     # Make sure the user not deleting the administrative account----------------------------------------------------------------------------------------------
+     USERID=$(id -u $NAME)
+     if [ $USERID -lt 1000 ]
+     then
+        echo "can not remove administrative account $NAME with UID $USERID " >&2
+     fi
+     
+     # Create an archive if requested to do so ---------------------------------------------------------------------------------------------------------------
+     if [ $ARCHIEVE -eq 'true' ]
+     then
+     
+        # Make sure the ARCHIEVE_DIR directory exists if not create one 
+        if [ ! -d "${ARCHIEVE_DIR}" ]
+        then 
+           echo "creating ${ARCHIEVE_DIR} directory"
+           mkdir -p ${ARCHIEVE_DIR}
+           if [ "${?}" -ne 0 ]
+           then
+              echo "${ARCHIEVE_DIR} directory can not be created" >&2
+              exit 1
+           fi
+         fi
+         
+        # ARCHIEVE USERS HOME DIRECTORY TO ARCHIEVE_DIR
+        echo "Archiving the user's home directory to ${ARCHIEVE_DIR} directory"      
+        HOME_DIR="/home/${NAME}"
+        ARCHIEVE_FILE="${ARCHIEVE_DIR}/${NAME}.tgz"
+        if [ -d "${HOME_DIR}" ] # if else
+        then
+           tar -zcf ${ARCHIEVE_FILE} ${HOME_DIR} &> /dev/null
+           
+           if [ "${?}" -ne 0 ]
+           then 
+             echo "could not create ${ARCHIEVE_FILE} ." >&2
+             exit 1
+           fi
+           
+        else
+             echo "${HOME_DIR} does not exist or is not a directory" >&2
+             exit 1
+        fi          
+     fi # Create an archive if requested to do so code complete
+     
+     # DELETE USER ----------------------------------------------------------------------------------------------------------------------------------------
+     if [ $DELETE_USER -eq 'true' ]  
+     then
+       userdel ${REMOVE_OPTION} ${NAME}
+       # check to see if userdel command succeed
+       if [ "${?}" -ne 0 ]
+       then 
+          echo "user ${NAME} can not be deleted " >&2
+          exit 1
+       fi
+       echo "THE ACCOUNT ${NAME} WAS DELETED "   
+     
+     else # IF DELETE USER SET TO FALSE THEN JUST DISABLE THEM
+        chage -E 0 ${NAME}
+        #check to see if chage command succeed
+        if [ "${?}" -ne 0 ]
+          then 
+             echo "user ${NAME} can not disabled " >&2
+          exit 1
+        fi 
+        echo "the account ${NAME} was disabled."     
+      fi 
+         
+done 
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
