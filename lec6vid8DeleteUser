@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#chage - change user password expiry information
+#-E, --expiredate EXPIRE_DATE
+#           Set the date or number of days since January 1, 1970 on which the user's
+#           account will no longer be accessible. The date may also be expressed in
+#           the format YYYY-MM-DD (or the format more commonly used in your area). A
+#           user whose account is locked must contact the system administrator
+#           before being able to use the system again.
+#sudo passwd -l devfedora - locking password for user devfedora 
+#sudo passwd -u devfedora - unlocking password for user devfedora  
+
+#      SCRIPT TO DELETE A USER   
+
+# Run as root
+if [ $UID -ne 0 ]
+then 
+   echo 'please run it as root' >&2
+   exit 1
+fi
+
+# first argument is the name of the user
+USER="${1}"
+
+# Delete the user
+userdel $USER
+
+# Mke sure the user got actuallly deleted 
+if [ "${?}" -ne 0 ]
+then
+  echo "User ${USER} Can not be deleted " >&2
+  exit 1
+fi
+
+# Tell the user account was deleted 
+echo "The account ${USER} was deleted"  
+
+exit 0
