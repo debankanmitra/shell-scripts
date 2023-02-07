@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#This script shows the open network ports on a system
+# USE -4 as an argument to limit to tcpv4 script
+
+netstat -nutl ${1} | grep ':'| awk '{print $1" " $4}' | awk -F ':' '{print $1" " $NF}'| awk '{print $1" " $NF}' | sort | uniq
+
+# sort and eliminate duplicate data - | sort -n | uniq lec7vid3
