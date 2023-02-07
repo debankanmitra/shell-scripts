@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# this script generates a random password 
+# this user can set the password length with -l and a special character with -s
+# verbose mode can be enabled with -v
+
+usage(){
+   echo "usage: ${0} [-vs] [-l length] " >&2
+   echo "generate a random password"
+   echo " -l length  specify the password length"
+   echo " -s         append a special character to the password"
+   echo " -v         increase verbosity"
+   exit 1
+}
+
+# set default password length 
+LENGTH=48
+
+while getopts vl:s OPTION # vls because we are providing vls option , l: means l must have a argument on its own
+do
+  case ${OPTION} in
+  v) 
+    VERBOSE='true'
+    echo 'verbose mode on'
+    ;;
+  l)
+    LENGTH="${OPTARG}"
+    ;;
+  s)
+    USE_SPECIAL_CHARACTER=true
+    ;;
+  ?)
+    usage
+    ;;
+  esac
+done     
+
+# generaing password 
+echo "Generating password"
+PASSWORD=$(date +%s%N$RANDOM | sha256sum | head -c${LENGTH})
+
+# append a special character if requested to do so 
+if [ "${USE_SPECIAL_CHARACTER}" = 'true' ]
+then
+   echo 'selecting a radom special charater'
+   SPECIAL_CHARACTER=$( echo '!@$%&()' | fold -w1 | shuf | head -c1 )
+   PASSWORD=$PASSWORD$SPECIAL_CHARACTER
+fi
+
+echo "DONE PASSWORD: ${PASSWORD}"
+exit 0         
+   
