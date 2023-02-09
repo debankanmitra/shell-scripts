@@ -1,0 +1,36 @@
+sed - STREAMLINE EDITOR , LETS YOU EDIT FILES WITH COMMANDS WITH NO NEED FOR A TEXT EDITOR
+awk - POWERFUL METHOD FOR PROCESSING AND ANALYZING TEXT FILES - IN PARTICULAR DATA FILES ARE ORGANISED BY LINES AND COLUMNS 
+
+SOURCES:
+https://youtu.be/ixOiOS35HYg
+https://youtu.be/M_T7Kb099pw
+
+SED:
+cat cities|sed 's/n/KA/p'  - 'substitute/find n/replace with KA/print'
+'s/n/KA/g/p' - 'substitute/find n/replace with KA/globally/print'
+'/nairobi/s/n/KA/p' - 'find lines consist of word nairobi/substitute/find n/replace with KA/print'
+'s/hi/bye;s/hello/jello' - ; used in multiple substitutes
+cat urls.txt|sed 's/^/https:\/\//' - ^ this means at start
+cat urls.txt | sed '/^$/d' - ^ it means initial , $ means at the end , so all the white space at the initial and at the end will be removed
+sed -r 's/[0-9]//g' - -r(regular expressions) , // means blank
+sed 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' - change all the lower case to upper case
+
+AWK:
+
+cat cities|awk '{print $1}' - print the first column
+cat urls.txt | awk -F '.' '{print $1}' - print everything which is coming before .
+
+CUT 
+
+https://youtu.be/eHGCxEVlHd0
+
+SORT
+The sort command is used in Linux to print the output of a file in given order. This command processes on your data (the content of the file or output of any command) and reorders it in the specified way, which helps us to read the data efficiently.09-Sept-2020
+
+DIFF
+diff is a command-line utility that allows you to compare two files line by line. It can also compare the contents of directories. The diff command is most commonly used to create a patch containing the differences between one or more files that can be applied using the patch command.
+
+test
+check file types and compare values -gt , -lt etc
+
+IF A COMMAND IS NOT AN EXECUTABLE OR A SHELL BUILTIN , IT WILL SEARCH FOR THE COMMAND ON PATH ENVIRONMENT VARIABLES
