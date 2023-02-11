@@ -1,0 +1,44 @@
+#!/bin/bash
+
+log() {                            # you can also use: function log { }
+   local MESSAGE=${@}  # local shell builtins make the variable local and scope to the function, so that it can be accessed only inside the function
+   echo "You called the log function ${MESSAGE}"
+}
+
+log 'HELLO'
+log 'this is fun'
+
+# this function send messages to syslog and to standard output if verbose is true 
+log_2(){
+    local VERBOSE=$1
+    shift
+    local MESSAGE=${@}
+    if [ $VERBOSE = 'true' ]
+    then 
+       echo $MESSAGE
+    fi   
+    logger -t lec6vid2Functions ${MESSAGE} # logger - enter messages into the system log
+}
+
+readonly VERBOSITY='true'     # readonly means constant variable 
+log_2 $VERBOSITY 'DEBNAKAN MITRA' 
+
+#--------------------------
+# Function to create a backup of a file ,  returns a non zero status on error
+backup(){
+    FILE=${1}
+    # make sure file exists
+    if [ -a "${FILE}" ]   # -a file True if file exists.
+    then
+       local BACKUP_FILE="/var/tmp/$(basename ${FILE}).$(date +%F%N)" # %F -- full date; like %+4Y-%m-%d , basename -- name of the file without the full path
+       log "BACKING UP $FILE TO $BACKUP_FILE"
+       cp -p $FILE $BACKUP_FILE     #  -p  same as --preserve=mode,ownership,timestamps
+    else
+       # if file doesnot exist , return a non zero exit status
+       return 1
+    fi      
+}
+
+backup '/home/devfedora/telegram_files/Q1.pdf'
+
+
