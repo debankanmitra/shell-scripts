@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# a list of servers one per line
+SERVER_LIST='/home/devfedora/Debankan/bash-scripting/lec8vid3.txt'
+
+# options for the ssh command 
+SSH_OPTIONS='-o connectTimeout=2'
+
+usage(){
+   echo "usage: ${0} [-nsv] [-f file] COMMAND " >&2
+   echo 'Executes COMMANDS as a single command on every server.' >&2
+   echo " -f FILE   use FILE for the list of severs .Default ${SERVER_LIST}" >&2
+   echo ' -n        Dry run mode.Display the COMMAND that would have been executed and exit ' >&2
+   echo ' -s        Execute command using sudo on the remote server' >&2
+   echo ' -v        verbose mode , display server name using executing command' >&2
+   exit 1  
+}
+
+# Make sure the script does not begin with Superuser privilages 
+if [ "${UID}" -eq 0 ]
+then 
+   echo 'Do not execute the script as roo.Use -s instead ' >&2
+   exit 1
+fi
+
+# Parse the options 
+while getopts f:nsv OPTION
+do
+   case ${OPTION} in
+   f) SERVER_LIST="${OPTARG}" ;;
+   n) DRY_RUN='true' ;;
+   v) VERBOSE='true' ;;
+   s) SUDO='sudo' ;;
+   ?) usage ;;
+   esac
+done       
+
+#Remove the options while leaving thew remaining arguments 
+shift "$(( OPTIND -1 ))" # NOT ABLE TO UNDERSTAND WHY WOULD WE USE THIS COMMAND , WHATS THE FUNCTION BEHIND IT
+                         # >>> NOW I UNDERSTOOD THIS LINE REMOVE EVERYTHING BEFORE COMMAND AND GIVE NEXT LINE EVRYTHING LEFT AS COMMAND TO ${@}
+
+# Anything that remains on the command line is treated as command
+COMMENT="${@}"
+
+# If the user doesn't supply atleast one argument give them help 
+if [ "${#}" -lt 1 ]
+then 
+   usage
+   exit 1
+fi    
+
+# Make sure the server file exists 
+if [ ! -e "${SERVER_LIST}" ]
+then
+  echo "Server file doesn't exist" >&2
+  exit 1
+fi
+
+# expect the best , prepare for the worst
+EXIT_STATUS='0'
+
+#Loop through the server list 
+for SERVER in $(cat ${SERVER_LIST})  
+do 
+  # check verbose 
+  if [[ "${VERBOSE}" -eq 'true' ]]
+  then 
+     echo "${SERVER}"
+  fi
+  
+  SSH_COMMAND="ssh ${SSH_OPTIONS} ${SERVER} ${SUDO} ${COMMAND}"
+  
+  if [[ "${DRY_RUN}" -eq 'true' ]]
+  then
+     echo "dry run: ${SSH_COMMAND}"  
+  else
+     ${SSH_COMMAND}
+     SSH_EXIT_STATUS="${?}"
+     
+     # Capture if any non-zer exit status from ${SSH_COMMAND} and report it to the user  
+     if [ $SSH_EXIT_STATUS -ne 0 ]
+      then 
+         echo "Execution of ${SERVER} failed" >&2
+         # we are not writing any exit status because , if one server fail we want to continue the script with other servers
+     fi
+  fi
+done
+
+exit $SSH_EXIT_STATUS    
+         
+
+
+
+
+
+
+
