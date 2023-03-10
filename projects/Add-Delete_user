@@ -1,0 +1,176 @@
+#!/bin/bash
+
+# This script enables you to add or remove user
+
+ARCHIEVE_DIR='/archieve'
+#CASE="${1}"	       
+#case ${1} in
+#  ADD) adduser "$@" ;;
+#  DEL) deleteuser "$@" ;;
+#  ?) echo " usage ${0} add USER_NAME [FULL NAME] " ;;
+#esac  
+
+adduser(){
+#make sure it using superuser privilage
+if [[ "${UID}" != 0 ]]
+then 
+   echo 'RUN THE SCRIPT WITH ROOT PRIVILAGES' >&2
+   exit 1
+fi
+
+# if they don't supply atleast one argument , then give them help 
+if [[ "${ARGUMENT}" -lt 1 ]]
+then 
+   echo " usage ${0} add USER_NAME [FULL NAME] kkkkkk" >&2
+   exit 1
+fi
+
+#USER_NAME=${2}
+#shift
+#COMMENT=${*} # FULL NAME
+
+# ADDING USER
+echo "adding user with username ${USER_NAME}" 
+useradd -m "${USER_NAME}"
+if [ "${?}" -ne 0 ]
+then
+   echo "username can not be created try again with a differnt one" >&2
+   exit 1
+fi
+
+# CREATING SYSTEM GENERATED PASSWORD
+PASSWORD=$( date +%s%N$RANDOM | sha256sum | head -c32 )
+SPECIAL_CHARACTER_1=$(echo '@!#%^^$*()+;.><' |fold -w1 | shuf | head -c1)
+SPECIAL_CHARACTER_2=$(echo '@!#%^^$*()+;.><' |fold -w1 | shuf | head -c1)
+PASSWORD="${SPECIAL_CHARACTER_2}${PASSWORD}${SPECIAL_CHARACTER_1}"
+echo "${PASSWORD}" | passwd --stdin "${USER_NAME}"
+# Check to see if the passwd comamnd succeded 
+if [ $? -ne 0 ]
+then 
+   echo 'the password could not be set' >&2
+   exit 1
+fi
+
+# force passwrd change on the first login 
+passwd -e "${USER_NAME}"
+
+# Display the username, password, and the host where the user was created.
+echo # leaves a blank space
+echo 'username'
+echo "${USER_NAME}"
+echo
+echo 'password'
+echo "${PASSWORD}"
+echo 
+echo 'Host'
+echo "${HOSTNAME}"
+
+exit 0
+}
+
+deleteuser()
+{
+#make sure it using superuser privilage
+if [[ "${UID}" != 0 ]]
+then 
+   echo 'RUN THE SCRIPT WITH ROOT PRIVILAGES' >&2
+   exit 1
+fi
+
+# if they don't supply atleast one argument , then give them help 
+if [[ "${ARGUMENT}" -lt 1 ]]
+then 
+   echo " usage ${0} add USER_NAME [FULL NAME] kkkkkk" >&2
+   exit 1
+fi
+
+# if username doesnot exist
+id -u "${USER_NAME}"
+if [[ "${?}" != 0 ]]
+then 
+   echo " Username ${USER_NAME} does not exist " >&2
+   exit 1
+fi
+
+#USER_NAME=${2}
+# MAKE SURE THE USER NOT DELETING THE ASMINISTRATIVE ACCOUNT 
+USERID=$(id -u "${USER_NAME}")
+     if [[ "${USERID}" -lt 1000 ]]
+     then
+        echo "can not remove administrative account $USER_NAME with UID $USERID " >&2
+        exit 1
+     fi
+
+# ARCHIEVE OF THE HOME DIRECTORY 
+read -p " do you want to create an archieve of the home directory(y/n)" ARCHIEVE
+if [[ "${ARCHIEVE}" = 'y' ]]
+then
+# Make sure the ARCHIEVE_DIR directory exists if not create one 
+        if [[ ! -d "${ARCHIEVE_DIR}" ]]
+        then 
+           echo "creating ${ARCHIEVE_DIR} directory"
+           mkdir -p ${ARCHIEVE_DIR}
+           if [[ "${?}" != 0 ]]
+           then
+              echo "${ARCHIEVE_DIR} directory can not be created" >&2
+              exit 1
+           fi
+         fi
+# ARCHIEVE USERS HOME DIRECTORY TO ARCHIEVE_DIR
+echo "Archiving the user's home directory to ${ARCHIEVE_DIR} directory"      
+        HOME_DIR="/home/${USER_NAME}"
+        ARCHIEVE_FILE="${ARCHIEVE_DIR}/${USER_NAME}.tgz"
+        if [[ -d "${HOME_DIR}" ]] # if else
+        then
+           tar -zcf ${ARCHIEVE_FILE} ${HOME_DIR} &> /dev/null
+           
+           if [[ "${?}" != 0 ]]
+           then 
+             echo "could not create ${ARCHIEVE_FILE} ." >&2
+             exit 1
+           fi
+           
+        else
+             echo "${HOME_DIR} does not exist or is not a directory" >&2
+             exit 1
+        fi  
+else 
+   echo 'ARCHIEVE WILL NOT BE CREATED'                             
+fi # Create an archive if requested to do so code complete
+# DELETING USER
+read -p "do you want to remove the home directory(y/n)" REMOVE
+if [[ "${REMOVE}" = 'y' ]]
+then 
+   echo 'deleting user along with home directory'
+   userdel -r "${USER_NAME}"
+   if [[ "${?}" != 0 ]]
+   then 
+      echo "user ${USER_NAME} can not be deleted " >&2
+          exit 1
+       fi
+else 
+   userdel "${USER_NAME}"
+   if [ $? != 0 ]
+   then 
+      echo "user ${USER_NAME} can not be deleted " >&2
+          exit 1
+       fi
+fi 
+exit 0       
+}
+
+ARGUMENT=$#
+USER_NAME=${2}
+if [[ "${1}" = 'add' ]]
+	then
+	   adduser
+	elif [[ "${1}" = 'delete' ]] 
+	then
+	   deleteuser
+	else
+	   echo " usage ${0} add USER_NAME [FULL NAME] "
+	   exit 1   
+	fi  
+
+exit 0
+
