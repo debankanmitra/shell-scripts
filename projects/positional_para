@@ -1,0 +1,8 @@
+#!/bin/bash
+
+
+FILE='/project/delfile'
+for VARIABLE in $FILE
+do
+    dnf remove $VARIABLE -y
+done
