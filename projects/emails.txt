@@ -1,0 +1,24 @@
+admission@technoindiagroup.com
+admission@technoindiagroup.com
+egrep '<h3 class="indicate-hover'
+ css-[a-z0-9]+">[a-zA-Z0-9 ,.’;-]+
+  css-[a-z0-9]+">[a-zA-Z0-9 ,.’;-?:‘]+
+   css-[a-z0-9]+">[a-zA-Z0-9 ,.’;\-?:‘&$“”]+
+   
+   (<h3 class="indicate-hover css-[a-z0-9]+">[a-zA-Z0-9 ,.’;\-?:‘&$\“\”]+)|((<p|<li) class="summary-class( css-[a-z0-9]+)?">[a-zA-Z0-9 ,.’;\-?:‘&$\“\”]+)
+   
+   \ giving problem
+   cat extract.txt | sed 's/<h3 class="indicate-hover css-[[:alnum:]]\+">/head /'
+   
+   cat extract.txt | sed -e 's/<h3 class="indicate-hover css-[[:alnum:]]\+">/[HEADLINES # ~] : /' -e 's/<p class="summary-class css-[[:alnum:]]\+">/SUMMARY >> /' -e 's/<li class="summary-class">/>> /'
+   
+   <h2 class="css-1kv6qi e15t083i0">Your Thursday Briefing: A Stronger NATO Emerges</h2>
+   <h2 class="css-1kv6qi e15t083i0">Religious Unrest Spreads in India With Killing of Hindu Man</h2>
+   <p class="css-1pga48a e15t083i1">Two Muslim men filmed themselves attacking a Hindu, a tailor, who had been accused of backing anti-Islamic remarks.</p>
+   <h2 class="css-1kv6qi e15t083i0">Abroad, Jacinda Ardern Is a Star. At Home, She’s Losing Her Shine.</h2>
+   <p class="css-1pga48a e15t083i1">New problems in New Zealand like inflation and gang violence and old problems like unaffordable housing have sent her polling numbers to new lows as an election looms next year.</p>
+   <h2 class="css-n0sicn e1hr934v1"><a href="https://www.nytimes.com/live/2022/06/28/world/russia-ukraine-war-news" data-rref="">Ukraine Updates: Turkey Agrees to Allow Sweden and Finland to Join NATO</a></h2>
+   <h2[a-zA-Z0-9 ="-><’]
+   
+   <h2 class="css-n0sicn e1hr934v1"><a data-rref="" href="/2022/06/29/world/middleeast/egypt-nile-houseboats-demolition.html">Egypt Destroys Nile Houseboats, Washing Away a Living Lore</a></h2>
+   <h2 class="css-n0sicn e1hr934v1"><a href="https://www.nytimes.com/live/2022/06/28/world/russia-ukraine-war-news" data-rref="">Ukraine Updates: Turkey Agrees to Allow Sweden and Finland to Join NATO</a></h2>
