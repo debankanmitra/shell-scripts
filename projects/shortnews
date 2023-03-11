@@ -1,0 +1,31 @@
+#!/bin/bash
+
+h2 with a tag grep : <h2 class="css-[a-z0-9 ]+"><a [a-z0-9=":/"- ]+>[a-zA-Z0-9 ,.’;?:‘&$\“\”íó-]+     # \ is the problem,so - must be given in end
+p class : <p class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;?:‘&$\“\”-]{4,}
+# THIS SCRIPT PRINTS HEADLINES AND SUMMARIES OF NEWS IN SHORT RIGHT INTO YOUR TERMINAL 
+# CURRENT FORMAT SUPPORTED FOR NEWYORKTIMES
+
+curl -s -k --insecure https://www.nytimes.com/ | egrep -o '(<h3 class="indicate-hover css-[a-z0-9]+">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|((<p|<li) class="summary-class( css-[a-z0-9]+)?">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)' | sed -e 's/<h3 class="indicate-hover css-[[:alnum:]]\+">/[HEADLINES # ~] : /' -e 's/<p class="summary-class css-[[:alnum:]]\+">/SUMMARY >> /' -e 's/<li class="summary-class">/>> /' # General
+
+curl -s -k --insecure https://www.nytimes.com/section/world | egrep -o '(<h2 class="css-[a-z0-9 ]+"><a [a-z0-9="-:/" ]+>[a-zA-Z0-9 ,.’;?:‘&$\“\”íó-]+)|(<p class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;?:‘&$\“\”óéñúáí-]{4,})|(<h2 class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;?:‘&$\“\”-]+)|((<p|<li) class="summary-class( css-[a-z0-9]+)?">[a-zA-Z0-9 ,.’;?:‘&$\“\”—-]+)|(<h3 class="indicate-hover css-[a-z0-9]+">[a-zA-Z0-9 ,.’;?:‘&$\“\”-]+)' | sed -e 's/<h3.*">/[HEADLINES # ~] : /' -e 's/<p.*">/SUMMARY >> /' -e 's/<li.*">/>> /' -e 's/<h2.*">/[HEADLINES # ~] : /' # Updated and advanced
+
+egrep -o '(<h3 class="indicate-hover css-[a-z0-9]+">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|((<p|<li) class="summary-class( css-[a-z0-9]+)?">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|(<h2 class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|(<p class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)'
+
+(<h3 class="indicate-hover css-[a-z0-9]+">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|((<p|<li) class="summary-class( css-[a-z0-9]+)?">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|(<h2 class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|(<p class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;\-?:‘&$\“\”]+)|(<h2 class="css-[a-z0-9 ]+"><a href=.*">[a-zA-Z0-9 ,.’;\-?:‘&$\“\”]+)
+
+
+
+final 
+(<h2 class="css-[a-z0-9 ]+"><a [a-z0-9="-:/" ]+>[a-zA-Z0-9 ,.’;?:‘&$\“\”íó-]+)|(<p class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;?:‘&$\“\”óéñúáí-]{4,})|(<h2 class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;?:‘&$\“\”-]+)|((<p|<li) class="summary-class( css-[a-z0-9]+)?">[a-zA-Z0-9 ,.’;?:‘&$\“\”—-]+)|(<h3 class="indicate-hover css-[a-z0-9]+">[a-zA-Z0-9 ,.’;?:‘&$\“\”-]+)
+
+sed:
+ <h2.*">
+ <h3.*">
+ <p.*">
+ <li.*">
+ echo -e "\033[33;5mHEADLINE\033[0m"
+ sed -e 's/<h3.*">/[HEADLINES # ~] : /' -e 's/<p.*">/SUMMARY >> /' -e 's/<li.*">/>> /' -e 's/<h2.*">/[HEADLINES # ~] : /'
+ 
+ (<h2 class="css-[a-z0-9 ]+"><a .*>[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|(<p class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|(<h2 class="css-[a-z0-9 ]+">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|((<p|<li) class="summary-class( css-[a-z0-9]+)?">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|(<h3 class="indicate-hover css-[a-z0-9]+">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)
+ 
+ 
