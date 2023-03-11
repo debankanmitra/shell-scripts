@@ -1,0 +1,14 @@
+#!/bin/bash
+
+BANO="\033[33;5mTitle of the Program\033[0m"
+echo "gadg ${BANO} jif"
+
+export GREP_COLOR='1;36'
+
+curl -s -k --insecure https://www.nytimes.com/ | egrep -o '(<h3 class="indicate-hover css-[a-z0-9]+">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)|((<p|<li) class="summary-class( css-[a-z0-9]+)?">[a-zA-Z0-9 ,.’;-?:‘&$\“\”]+)' | sed -e 's/<h3 class="indicate-hover css-[[:alnum:]]\+">/[HEADLINES # ~] : /' -e 's/<p class="summary-class css-[[:alnum:]]\+">/SUMMARY >> /' -e 's/<li class="summary-class">/>> /' | egrep --color=auto -i 'HEADLINES'
+
+#export GREP_COLOR='1;36'
+
+#UROB=$( "${CURO}" | egrep --color=auto -i 'SUMMARY' )
+
+#${CUROB}
